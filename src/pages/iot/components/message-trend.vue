@@ -47,8 +47,7 @@
 <script lang="ts" setup>
 import type { DeviceMessageSummaryByDateVO } from '@/api/iot/statistics'
 import { computed, nextTick, onMounted, ref } from 'vue'
-import { getDeviceMessageSummaryByDate } from '@/api/iot/statistics'
-import { formatDateTime } from '@/utils/date'
+import { createLast7DaysDateTimeRange, getDeviceMessageSummaryByDate } from '@/api/iot/statistics'
 
 const loading = ref(true)
 const dataList = ref<DeviceMessageSummaryByDateVO[]>([])
@@ -124,9 +123,8 @@ async function loadData() {
   loading.value = true
   try {
     const now = new Date()
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6)
-    const times = [formatDateTime(start), formatDateTime(end)]
+    const times = createLast7DaysDateTimeRange(now)
     dataList.value = await getDeviceMessageSummaryByDate({ interval: 1, times }) || []
     // 生成近7天日期标签 MM/DD
     xLabels.value = Array.from({ length: 7 }, (_, i) => {

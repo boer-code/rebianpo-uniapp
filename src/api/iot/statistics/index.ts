@@ -1,5 +1,9 @@
 import { http } from '@/http/http'
 
+import type { DeviceMessageSummaryByDateParams } from './query'
+
+import { serializeDeviceMessageSummaryByDateParams } from './query'
+
 /** 统计摘要数据 */
 export interface StatisticsSummaryVO {
   productCategoryCount: number
@@ -30,6 +34,11 @@ export interface DeviceMessageSummaryByDateVO {
 }
 
 /** 获取设备消息统计（按日期） */
-export function getDeviceMessageSummaryByDate(params: { interval: number, times?: string[] }) {
-  return http.get<DeviceMessageSummaryByDateVO[]>('/iot/statistics/get-device-message-summary-by-date', params)
+export function getDeviceMessageSummaryByDate(params: DeviceMessageSummaryByDateParams) {
+  return http.get<DeviceMessageSummaryByDateVO[]>(
+    '/iot/statistics/get-device-message-summary-by-date',
+    serializeDeviceMessageSummaryByDateParams(params),
+  )
 }
+
+export { createLast7DaysDateTimeRange } from './query'
